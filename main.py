@@ -101,7 +101,7 @@ class Cli(cmd.Cmd):
 
 if (__name__=="__main__"):
 	myCli = Cli()
-	myCli.do_snmpAgent("194.167.159.254 imedias")
+	
 	myCli.prompt = "snmptools >"
 	myCli.intro = """SNMP Tools (1.0) query command line interpreter.
 		Type help or ? for help. """
