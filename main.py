@@ -15,6 +15,8 @@
 
 import sys
 import cmd
+
+
 sys.path.append('./')
 
 
@@ -45,10 +47,21 @@ class Cli(cmd.Cmd):
 
 		mySnmpQuery.list_ifDesc()
 
+	def do_show_camTable(self, arg):
+		""" Show the cam table of the agent
+			use : show_camTable
+		"""
+		try:
+			mySnmpQuery=snmpQuery(self.ip,self.community)
+		except AttributeError, error:
+			print """WARNING: You must define a snmp agent before try to use !
+	See snmpAgent command !"""
+			return
+		mySnmpQuery.list_camTable()
 
 	def do_show_macTable(self,arg):
 		""" Show the mac table of the agent
-			use : show_ifMac [verbose]
+			use : show_ifMac
 		"""
 		try:
 			mySnmpQuery=snmpQuery(self.ip,self.community)
@@ -101,7 +114,7 @@ class Cli(cmd.Cmd):
 
 if (__name__=="__main__"):
 	myCli = Cli()
-	
+	myCli.do_snmpAgent("194.167.159.254 imedias")
 	myCli.prompt = "snmptools >"
 	myCli.intro = """SNMP Tools (1.0) query command line interpreter.
 		Type help or ? for help. """

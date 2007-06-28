@@ -25,6 +25,16 @@ class snmpQuery:
 	def __init__(self, host, community):
 		self.client = Snmp(host,community)
 	
+	def list_camTable(self):
+		result=[]
+		subTab = self.client.walk(".1.3.6.1.2.1.17.4.3.1.1")
+		for valeur in subTab:
+			field = valeur[0].split('.')
+			nbElt = len(field)
+			bridge=field[nbElt-6]+"."+field[nbElt-5]+"."+field[nbElt-4]+"."+field[nbElt-3]+"."+field[nbElt-2]+"."+field[nbElt-1]
+			result.append((self.client.getValue(".1.3.6.1.2.1.17.4.3.1.2."+bridge),valeur[1]))
+		for elt in result:
+			print "%s: \t\t%s"%(self.client.getValue(".1.3.6.1.2.1.31.1.1.1.1."+str(elt[0])),convertValue().hexToString(elt[1]))
 
 	def list_macTable(self):
 		result=[]
@@ -34,8 +44,8 @@ class snmpQuery:
 			field = valeur[0].split('.')
 			nbElt = len(field)
 			result.append((field[nbElt-5],field[nbElt-4]+"."+field[nbElt-3]+"."+field[nbElt-2]+"."+field[nbElt-1],valeur[1]))
-
-		for elt in result:
+		
+		for elt in sort(result,0):
 			print "%s: \t\t%s (%s)"%(self.client.getValue(".1.3.6.1.2.1.2.2.1.2."+elt[0]),convertValue().hexToString(elt[2]),elt[1])
 
 	def list_ifDesc(self):
