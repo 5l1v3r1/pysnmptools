@@ -40,12 +40,10 @@ class snmpQuery:
 		result=[]
 		subTab = self.client.walk(".1.3.6.1.2.1.4.22.1.2")
 		for valeur in subTab:
-			
 			field = valeur[0].split('.')
 			nbElt = len(field)
 			result.append((field[nbElt-5],field[nbElt-4]+"."+field[nbElt-3]+"."+field[nbElt-2]+"."+field[nbElt-1],valeur[1]))
-		
-		for elt in sort(result,0):
+		for elt in result:
 			print "%s: \t\t%s (%s)"%(self.client.getValue(".1.3.6.1.2.1.2.2.1.2."+elt[0]),convertValue().hexToString(elt[2]),elt[1])
 
 	def list_ifDesc(self):
