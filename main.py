@@ -15,6 +15,7 @@
 
 import sys
 import cmd
+import threading
 
 
 sys.path.append('./')
@@ -59,6 +60,27 @@ class Cli(cmd.Cmd):
 			return
 		mySnmpQuery.list_camTable()
 
+
+	def do_start_getBandWidth(self,arg):
+		""" Get BandWidth
+		"""
+		try:
+			self.snmpBandWidth=snmpQueryGetBandWidth(self.ip,self.community,arg)
+			self.snmpBandWidth.start()
+		except AttributeError, error:
+			print "error"
+			return
+
+	def do_stop_getBandWidth(self,arg):
+		""" Stop viewing of BandWidth
+		"""
+		try:
+			self.snmpBandWidth.stop()
+		except AttributeError, error:
+			print "error"
+			return
+
+
 	def do_show_macTable(self,arg):
 		""" Show the mac table of the agent
 			use : show_ifMac
@@ -102,6 +124,17 @@ class Cli(cmd.Cmd):
 	[IP]: ip address of the snmp v2c agent
 	[COMMUNITY]: community of this agent"""
 
+	def do_write_memory(self, arg):
+		""" Save the context of pysnmptools
+			use: write_memory
+		"""
+		try:
+		 f = open('.pysnmptools.backup', 'w')
+		 pickle.dump(self, f)
+		 f.close()
+		except Exception, error:
+		 print "Error : " % error
+
 	def do_print_agent(self,arg):
 		""" Print snmp agent configured """
 		try:
@@ -113,9 +146,9 @@ class Cli(cmd.Cmd):
 			return
 
 if (__name__=="__main__"):
-	myCli = Cli()
+	 myCli = Cli()
 	
-	myCli.prompt = "snmptools >"
-	myCli.intro = """SNMP Tools (1.0) query command line interpreter.
+	 myCli.prompt = "snmptools >"
+	 myCli.intro = """SNMP Tools (1.0) query command line interpreter.
 		Type help or ? for help. """
-	myCli.cmdloop()
+	 myCli.cmdloop()
