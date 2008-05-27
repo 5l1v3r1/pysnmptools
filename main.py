@@ -129,11 +129,31 @@ class Cli(cmd.Cmd):
 			use: write_memory
 		"""
 		try:
-		 f = open('.pysnmptools.backup', 'w')
-		 pickle.dump(self, f)
+		 import pickle
+		 import user
+		 
+		 f = open(user.home+'/.pysnmptools.backup', 'w')
+		 pickle.dump(self.ip, f)
+		 pickle.dump(self.community, f)
 		 f.close()
 		except Exception, error:
 		 print "Error : " % error
+		 return
+
+	def do_load_memory(self,arg):
+		""" Retrieve the context of pysnmptools
+		"""
+		try:
+			import pickle
+			import user
+			f=open(user.home+'/.pysnmptools.backup','r')
+			self.ip=pickle.load(f)
+			self.community=pickle.load(f)
+			f.close()
+		except Exception, error:
+			print "Error" % error
+			return
+
 
 	def do_print_agent(self,arg):
 		""" Print snmp agent configured """
