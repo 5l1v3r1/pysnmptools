@@ -130,28 +130,38 @@ class Cli(cmd.Cmd):
 		"""
 		try:
 		 import pickle
-		 import user
-		 
-		 f = open(user.home+'/.pysnmptools.backup', 'w')
-		 pickle.dump(self.ip, f)
-		 pickle.dump(self.community, f)
-		 f.close()
-		except Exception, error:
-		 print "Error : " % error
-		 return
+		 import os
+		 try:
+			 f = open(os.path.expanduser("~")+'/.pysnmptools.backup', 'w')
+			 pickle.dump(self.ip, f)
+			 pickle.dump(self.community, f)
+			 f.close()
+		 except IOError, (errno, strerror):
+			print "Error: Can't write configuration file!"
+
+		except AttributeError, strerror:
+			print """WARNING: You must define a snmp agent before try to use !
+			        See snmpAgent command !"""
+
+		except Exception, strerror:
+		 print "Error : ",strerror
 
 	def do_load_memory(self,arg):
 		""" Retrieve the context of pysnmptools
 		"""
 		try:
 			import pickle
-			import user
-			f=open(user.home+'/.pysnmptools.backup','r')
-			self.ip=pickle.load(f)
-			self.community=pickle.load(f)
-			f.close()
+			import os
+			try:
+				f=open(os.path.expanduser("~")+'/.pysnmptools.backup','r')
+				self.ip=pickle.load(f)
+				self.community=pickle.load(f)
+				f.close()
+			except IOError, (errno, strerror):
+				print "Warning: No such configuration file for pysnmptools";
+
 		except Exception, error:
-			print "Error" % error
+			print "Error", error
 			return
 
 
